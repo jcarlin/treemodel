@@ -73,24 +73,22 @@ int main(int argc, char *argv[])
     qDebug() << "db.open?: " << ok;
 
     // Container class to avoid startup code in main.cpp
-    Setup setup;
+    Setup *setup = new Setup();
 
-    // Start a QML viewer (seperate UI window) as well
+    // Instantiate a TreeItem and TreeModel.
+    //But, can't we get TreeModel from Setup? ... [TreeModel *treeModel = setup->treeModel2;]
+    //QList<QVariant> rootData;
+    //rootData << "Title" << "Summary"; // required?!
+    //TreeItem *root1 = new TreeItem(rootData);
+    //TreeModel *treeModel = new TreeModel(root1, QString());
+    TreeModel *treeModel = setup->treeModel;
+
+    // Start a QML viewer (seperate UI window) as well and make the instance available to QML/QtQuick
     QQuickView *viewer = new QQuickView();
-
-    // Instantiate a TreeItem and TreeModel. But, can't we get TreeModel from Setup? ... [TreeModel *treeModel = setup->treeModel2;]
-    QList<QVariant> rootData;
-    rootData << "Title" << "Summary"; // required?!
-    TreeItem *root1 = new TreeItem(rootData);
-    TreeModel *treeModel = new TreeModel(root1, QString());
-
-    // Make the instance available to QML/QtQuick
     viewer->rootContext()->setContextProperty("tModel", treeModel);
-
     viewer->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
     viewer->setTitle("QtQuick/QML UI");
     viewer->show();
-
 
     // Start the app
     return app.exec();

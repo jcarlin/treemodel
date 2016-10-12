@@ -83,14 +83,10 @@ int TreeModel::columnCount(const QModelIndex &parent) const
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
 
-  if (!index.isValid())
-      return QVariant();
-
-  if (role != Qt::DisplayRole)
+  if (!index.isValid() || role != Qt::DisplayRole)
       return QVariant();
 
   TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
-
   return item->data(index.column());
 }
 //! [3]
@@ -151,9 +147,12 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
 
   return createIndex(parentItem->row(), 0, parentItem);
 }
-//! [7]
 
-//! [8]
+QHash<int, QByteArray> TreeModel::roleNames() const
+{
+  return this->rootItem->roleNames();
+}
+
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
   TreeItem *parentItem;

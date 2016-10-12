@@ -12,6 +12,8 @@ Rectangle {
   width: 800
   height: 600
 
+  property var mModel: tModel
+
   GridLayout {
     anchors.fill: parent
     columns: 3
@@ -19,7 +21,7 @@ Rectangle {
       text: "TableView"
     }
     Label {
-      text: "ListView"
+      text: "TableView 2"
     }
     Label {
       text: "TreeView"
@@ -29,13 +31,22 @@ Rectangle {
       id: tableView
       Layout.fillHeight: true
       model: tModel
-      TableViewColumn { role: "cohead_number"; title: "Order #";}
-      TableViewColumn { role: "cohead_billtoname"; title: "Bill To";}
+      TableViewColumn { role: "orderNumber"; title: "Order #";}
+      TableViewColumn { role: "billTo"; title: "Bill To";}
     }
 
-    ListView {
+    TableView {
+      id: tableView2
       Layout.fillHeight: true
       model: tModel
+      TableViewColumn { role: "orderNumber"; title: "Order #";}
+      TableViewColumn { role: "billTo"; title: "Bill To";}
+
+      itemDelegate: Item {
+        Text {
+          text: styleData.value
+        }
+      }
     }
   }
 }
