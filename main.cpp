@@ -73,14 +73,10 @@ int main(int argc, char *argv[])
     qDebug() << "db.open?: " << ok;
 
     // Container class to avoid startup code in main.cpp
-    Setup *setup = new Setup();
+    Setup setup;
 
     // Start a QML viewer (seperate UI window) as well
     QQuickView *viewer = new QQuickView();
-    QQmlContext *context = viewer->rootContext();
-    viewer->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
-    viewer->setTitle("QtQuick/QML UI");
-    viewer->show();
 
     // Instantiate a TreeItem and TreeModel. But, can't we get TreeModel from Setup? ... [TreeModel *treeModel = setup->treeModel2;]
     QList<QVariant> rootData;
@@ -90,6 +86,11 @@ int main(int argc, char *argv[])
 
     // Make the instance available to QML/QtQuick
     viewer->rootContext()->setContextProperty("tModel", treeModel);
+
+    viewer->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
+    viewer->setTitle("QtQuick/QML UI");
+    viewer->show();
+
 
     // Start the app
     return app.exec();
