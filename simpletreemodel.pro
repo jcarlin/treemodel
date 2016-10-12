@@ -9,6 +9,3 @@ SOURCES     = treeitem.cpp \
               main.cpp \
               setup.cpp
 
-# install
-//target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/simpletreemodel
-//INSTALLS += target

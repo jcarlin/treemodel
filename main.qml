@@ -4,6 +4,8 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
+import QtQuick.XmlListModel 2.0
+import QtQml 2.2
 
 Rectangle {
   id: window
