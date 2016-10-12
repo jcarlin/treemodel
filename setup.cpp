@@ -73,7 +73,7 @@ Setup::Setup(QObject *parent) : QObject(parent)
     int coheadId = orderSql.value("cohead_id").toInt();
     QSqlQuery lineItemsSql;
     lineItemsSql.prepare("SELECT "
-                         "  coitem_linenumber, item_number, item_descrip1 coitem_qtyord "
+                         "  coitem_linenumber, item_number, item_descrip1, coitem_qtyord "
                          "FROM "
                          "  coitem "
                          "  JOIN itemsite on coitem_itemsite_id = itemsite_id "

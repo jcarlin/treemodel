@@ -26,17 +26,14 @@ Rectangle {
     TableView {
       id: tableView
       Layout.fillHeight: true
-      //model: tModel.hasChildren()
-      TableViewColumn { role: "sdf"; title: "Type";}
-      TableViewColumn { role: "cohead_id"; title: "Type";}
+      model: tModel
+      TableViewColumn { role: "cohead_number"; title: "Order #";}
+      TableViewColumn { role: "cohead_billtoname"; title: "Bill To";}
     }
 
     ListView {
       Layout.fillHeight: true
-      //model: tModel
-      delegate: Text {
-        text: tModel.data()
-      }
+      model: tModel
     }
   }
 }
