@@ -23,7 +23,7 @@ Setup::Setup(QObject *parent) : QObject(parent)
    * - call setupModelData to create TreeItems based on text file text indentation
    *
    */
-  QFile file(":/default.txt");
+  /*QFile file(":/default.txt");
   file.open(QIODevice::ReadOnly);
   QString readAll = file.readAll();
   file.close();
@@ -39,6 +39,10 @@ Setup::Setup(QObject *parent) : QObject(parent)
   treeViewExample = new QTreeView();
   treeViewExample->setModel(treeModelExample);
 
+  layout->addWidget(new QLabel("QTreeView"), 0, 0);
+  layout->addWidget(treeViewExample, 1, 0);
+  */
+
   /*
    * JC
    * TBD - The method of construction of TreeItems in qml (xtmi)
@@ -51,8 +55,9 @@ Setup::Setup(QObject *parent) : QObject(parent)
    * - create treeModel TreeModel with root tree item
    *
    */
+
   QList<QVariant> rootData2;
-  rootData2 << "Order Number" << "Bill To";
+  rootData2 << "orderNumber" << "billTo";
   TreeItem *rootItem = new TreeItem(rootData2);
 
   // orders
@@ -97,20 +102,20 @@ Setup::Setup(QObject *parent) : QObject(parent)
     i++;
   }
   treeModel = new TreeModel(rootItem, QString());
+
+  // JC - Qt ui model/view
   treeView = new QTreeView();
   treeView->setModel(treeModel);
 
   QTableView *tableView = new QTableView();
   tableView->setModel(treeModel);
 
-  // Add the treeViewExample and JC treeView to layout
-  layout->addWidget(new QLabel("QTreeView"), 0, 0);
-  layout->addWidget(treeViewExample, 1, 0);
   layout->addWidget(new QLabel("QTreeView"), 0, 1);
   layout->addWidget(treeView, 1, 1);
   layout->addWidget(new QLabel("QTableView"), 0, 2);
   layout->addWidget(tableView, 1, 2);
 
+  // Display window
   window->setWindowTitle("Qt/QWidget UI");
   window->show();
 

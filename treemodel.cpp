@@ -54,44 +54,69 @@
 TreeModel::TreeModel(TreeItem *prototype, const QString &data, QObject *parent)
     : QAbstractItemModel(parent)
 {
-    //QList<QVariant> rootData;
-    //rootData << "Title" << "Summary";
-    //rootItem = new TreeItem(rootData);
-    rootItem = prototype;
-    //setupModelData(data.split(QString("\n")), rootItem);
+  rootItem = prototype;
 }
 //! [0]
 
 //! [1]
 TreeModel::~TreeModel()
 {
-    delete rootItem;
+  delete rootItem;
 }
-//! [1]
 
-//! [2]
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
-  if (parent.isValid())
-      return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-  else
-      return rootItem->columnCount();
+  if (parent.isValid()) {
+    return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+  }
+  else {
+    return rootItem->columnCount();
+  }
 }
-//! [2]
 
-//! [3]
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
+  /*
+   * Example: todoq
+    QModelIndex index;
+    if (childNodes.at(0).isText())
+        index = createIndex(idx.row() + 1, 0);
+    else
+        index = idx;
 
-  if (!index.isValid() || role != Qt::DisplayRole)
-      return QVariant();
+    if (index.row() < 0 || index.row() > childNodes.count()
+            || !childNodes.item(index.row()).isElement())
+        return QVariant();
+  */
 
-  TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
-  return item->data(index.column());
+  /*
+   * Example2: foodmodel
+    // Things we don't care about
+    if (!index.isValid()) return QVariant();
+    if (index.column() > 0) return QVariant();
+    if (role != Qt::DisplayRole) return QVariant();
+
+    // Grab the internal pointer from the index to see where we are in the tree
+    ItemInfo *info = static_cast<ItemInfo*>(index.internalPointer());
+    if (info->name == "root") {
+        // The parent of this item is the root element
+        Q_ASSERT(index.row() < modelNames_.size());
+        return modelNames_.at(index.row());
+    }
+
+    // Else, grab the model for this level in the tree
+    Q_ASSERT(info->row < models_.size());
+    QAbstractItemModel *m = models_.at(info->row);
+    return m->data(m->index(index.row(), displayColumn_), role);
+   */
+
+  if(index.isValid() && (role == Qt::DisplayRole || role > Qt::UserRole)) {
+      TreeItem *treeItem = treeItemForIndex(index);
+      return treeItem->data(index.column(), role);
+  }
+  return QVariant();
 }
-//! [3]
 
-//! [4]
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
   if (!index.isValid())
@@ -99,41 +124,45 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 
   return QAbstractItemModel::flags(index);
 }
-//! [4]
 
-//! [5]
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return rootItem->data(section);
+      return rootItem->data(section, role);
 
   return QVariant();
 }
-//! [5]
 
-//! [6]
 QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) const
 {
+  /* JC - TODO - simplify
   if (!hasIndex(row, column, parent))
-      return QModelIndex();
+    return QModelIndex();
 
   TreeItem *parentItem;
 
   if (!parent.isValid())
-      parentItem = rootItem;
+    parentItem = rootItem;
   else
-      parentItem = static_cast<TreeItem*>(parent.internalPointer());
+    parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
   TreeItem *childItem = parentItem->child(row);
   if (childItem)
-      return createIndex(row, column, childItem);
+    return createIndex(row, column, childItem);
   else
-      return QModelIndex();
-}
-//! [6]
+    return QModelIndex();
+  */
 
-//! [7]
+  // Note: this works just fine - Readonlymodel from ex-treemodel example
+  if(hasIndex(row, column, parent)) {
+    TreeItem *parentTreeItem = treeItemForIndex(parent);
+    TreeItem *childTreeItem = parentTreeItem->m_childItems.at(row);
+    return createIndex(row, column, childTreeItem);
+  }
+  return QModelIndex();
+}
+
 QModelIndex TreeModel::parent(const QModelIndex &index) const
 {
   if (!index.isValid())
@@ -166,8 +195,8 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
   return parentItem->childCount();
 }
-//! [8]
 
+// Used for simpletreemodel example only.
 void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
 {
   QList<TreeItem*> parents;
@@ -197,7 +226,6 @@ void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
       if (position > indentations.last()) {
         // The last child of the current parent is now the new parent
         // unless the current parent has no children.
-
         if (parents.last()->childCount() > 0) {
             parents << parents.last()->child(parents.last()->childCount()-1);
             indentations << position;
@@ -208,11 +236,17 @@ void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
             indentations.pop_back();
         }
       }
-
       // Append a new item to the current parent's list of children.
       parents.last()->appendChild(new TreeItem(columnData, parents.last()));
     }
-
     ++number;
   }
+}
+
+TreeItem *TreeModel::treeItemForIndex(const QModelIndex &index) const
+{
+  if(index.isValid()) {
+    return static_cast<TreeItem*>(index.internalPointer());
+  }
+  return rootItem;
 }

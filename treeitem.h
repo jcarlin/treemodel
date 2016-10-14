@@ -44,7 +44,6 @@
 #include <QList>
 #include <QVariant>
 
-//! [0]
 class TreeItem
 {
 public:
@@ -52,20 +51,26 @@ public:
   ~TreeItem();
 
   void appendChild(TreeItem *child);
-
-  TreeItem *child(int row);
   int childCount() const;
   int columnCount() const;
-  QVariant data(int column) const;
-  QHash<int, QByteArray> roleNames() const;
   int row() const;
-  TreeItem *parentItem();
 
-private:
+  // TODO - make private?
+  TreeItem *parentItem();
+  TreeItem *child(int row);
+
+  // TODO - Remove these. To be implemented in subclasses.
+  QVariant data(int column, int role) const;
+  QHash<int, QByteArray> roleNames() const;
+  enum RoleNames {
+    orderNumber = Qt::UserRole + 1,
+    billTo = Qt::UserRole + 2
+  };
+
+//private:
   QList<TreeItem*> m_childItems;
   QList<QVariant> m_itemData;
   TreeItem *m_parentItem;
 };
-//! [0]
 
 #endif // TREEITEM_H

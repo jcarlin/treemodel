@@ -79,9 +79,13 @@ int TreeItem::columnCount() const
   return m_itemData.count();
 }
 
-QVariant TreeItem::data(int column) const
+QVariant TreeItem::data(int column, int role) const
 {
-  return m_itemData.value(column);
+  // TODO - try to avoid need for if else. Role and column name could be the same.
+  if (role == orderNumber)
+    return m_itemData.value(0);
+  else if (role == billTo)
+    return m_itemData.value(1);
 }
 
 TreeItem *TreeItem::parentItem()
@@ -100,7 +104,7 @@ int TreeItem::row() const
 QHash<int, QByteArray> TreeItem::roleNames() const
 {
   QHash<int, QByteArray> roles;
-  roles.insert(Qt::UserRole + 1, "orderNumber");
-  roles.insert(Qt::UserRole + 1, "billTo");
+  roles[orderNumber] = "orderNumber";
+  roles[billTo] = "billTo";
   return roles;
 }

@@ -48,31 +48,33 @@
 
 class TreeItem;
 
-//! [0]
 class TreeModel : public QAbstractItemModel
 {
-    Q_OBJECT
-
+  Q_OBJECT
 public:
-    explicit TreeModel(TreeItem *prototype, const QString &data, QObject *parent = 0);
-    ~TreeModel();
+  explicit TreeModel(TreeItem *prototype, const QString &data, QObject *parent = 0);
+  ~TreeModel();
 
-    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
-    Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
-    QHash<int, QByteArray> roleNames() const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+  // Required overrides
+  QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+  QModelIndex index(int row, int column,
+                    const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+  QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
+  QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+
+  // Required for editing model
+  Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
+  // Custom
+  TreeItem* treeItemForIndex(const QModelIndex &index) const;
 
 //private:
-    void setupModelData(const QStringList &lines, TreeItem *parent);
-
-    TreeItem *rootItem;
+  void setupModelData(const QStringList &lines, TreeItem *parent);
+  TreeItem *rootItem;
 };
-//! [0]
 
 #endif // TREEMODEL_H

@@ -63,6 +63,8 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+    // XXX - temp. db connect
     QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
     db.setHostName("");
     db.setDatabaseName("");
@@ -72,24 +74,23 @@ int main(int argc, char *argv[])
     bool ok = db.open();
     qDebug() << "db.open?: " << ok;
 
-    // Container class to avoid startup code in main.cpp
+    QQmlApplicationEngine engine;
+
+    // Temporarily/junk container class to move required startup code out of main.cpp.
     Setup *setup = new Setup();
 
-    // Instantiate a TreeItem and TreeModel.
-    //But, can't we get TreeModel from Setup? ... [TreeModel *treeModel = setup->treeModel2;]
-    //QList<QVariant> rootData;
-    //rootData << "Title" << "Summary"; // required?!
-    //TreeItem *root1 = new TreeItem(rootData);
-    //TreeModel *treeModel = new TreeModel(root1, QString());
     TreeModel *treeModel = setup->treeModel;
+    engine.rootContext()->setContextProperty("tModel", treeModel);
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-    // Start a QML viewer (seperate UI window) as well and make the instance available to QML/QtQuick
-    QQuickView *viewer = new QQuickView();
-    viewer->rootContext()->setContextProperty("tModel", treeModel);
-    viewer->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
-    viewer->setTitle("QtQuick/QML UI");
-    viewer->show();
-
-    // Start the app
+    /*
+     *  Alternative to engine is start a QML viewer (seperate UI window) as well
+     *  and make the instance available to QML/QtQuick.
+      QQuickView *viewer = new QQuickView();
+      viewer->rootContext()->setContextProperty("tModel", treeModel);
+      viewer->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
+      viewer->setTitle("QtQuick/QML UI");
+      viewer->show();
+    */
     return app.exec();
 }
