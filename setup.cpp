@@ -23,7 +23,7 @@ Setup::Setup(QObject *parent) : QObject(parent)
    * - call setupModelData to create TreeItems based on text file text indentation
    *
    */
-  /*QFile file(":/default.txt");
+  QFile file(":/default.txt");
   file.open(QIODevice::ReadOnly);
   QString readAll = file.readAll();
   file.close();
@@ -41,7 +41,6 @@ Setup::Setup(QObject *parent) : QObject(parent)
 
   layout->addWidget(new QLabel("QTreeView"), 0, 0);
   layout->addWidget(treeViewExample, 1, 0);
-  */
 
   /*
    * JC
@@ -64,7 +63,6 @@ Setup::Setup(QObject *parent) : QObject(parent)
   QSqlQuery orderSql;
   orderSql.prepare("SELECT cohead_id, cohead_number, cohead_billtoname FROM cohead");
   orderSql.exec();
-  int colCount = orderSql.record().count();
   int i = 0;
   while (orderSql.next()) {
     QList<QVariant> rowData;
@@ -101,23 +99,24 @@ Setup::Setup(QObject *parent) : QObject(parent)
     }
     i++;
   }
-  treeModel = new TreeModel(rootItem, QString());
 
-  // JC - Qt ui model/view
+  // JC - Qt ui treemodel/treeview
+  treeModel = new TreeModel(rootItem, QString());
   treeView = new QTreeView();
   treeView->setModel(treeModel);
-
-  QTableView *tableView = new QTableView();
-  tableView->setModel(treeModel);
-
   layout->addWidget(new QLabel("QTreeView"), 0, 1);
   layout->addWidget(treeView, 1, 1);
-  layout->addWidget(new QLabel("QTableView"), 0, 2);
-  layout->addWidget(tableView, 1, 2);
+
+  // JC - Qt ui treemodel/tableview
+  //QTableView *tableView = new QTableView();
+  //tableView->setModel(treeModel);
+  //layout->addWidget(new QLabel("QTableView"), 0, 2);
+  //layout->addWidget(tableView, 1, 2);
 
   // Display window
   window->setWindowTitle("Qt/QWidget UI");
-  window->show();
-
+  // TODO - troubleshoot and correct bug causing crash... Likely memory leak from pointers not
+  // being deleted in this class.
+  //window->show();
 }
 

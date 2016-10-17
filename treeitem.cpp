@@ -48,10 +48,10 @@
 #include "treeitem.h"
 #include <QDebug>
 
-TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
+TreeItem::TreeItem(const QList<QVariant> &rowData, TreeItem *parent)
 {
   m_parentItem = parent;
-  m_itemData = data;
+  m_itemData = rowData;
 }
 
 TreeItem::~TreeItem()

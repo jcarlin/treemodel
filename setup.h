@@ -20,7 +20,7 @@ public:
   TreeModel *treeModel;
   QTreeView *treeViewExample;
   QTreeView *treeView;
-signals:
+
 
 public slots:
 };

@@ -11,7 +11,7 @@ ApplicationWindow {
   visible: true
   width: 800
   height: 600
-
+  title: "QML UI"
   //property var mModel: tModel
 
   Component.onCompleted: { console.log("Rectangle main.qml completed"); }
