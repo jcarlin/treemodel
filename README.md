@@ -13,3 +13,6 @@ Qt's simpletreemodel example, expanded to also display sql data in QTableView, Q
 
 #### Imporant notes:
 - In my testing, QML TreeView only worked with Qt 5.7, I have no idea why and there were some hints of Qt bugs around this. I moved on as soon as it worked. TLDR; Requires Qt 5.7.
+
+#### Testing (TODO)
+- http://wiki.qt.io/Model_Test
